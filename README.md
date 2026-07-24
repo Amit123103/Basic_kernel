@@ -19,7 +19,12 @@ If you do not want to set up build tools or compile from source, you can downloa
 
 1. Go to [**GitHub Releases**](https://github.com/Amit123103/Basic_kernel/releases).
 2. Download **`mykernel.elf`** or **`mykernel.iso`**.
-3. Run directly with QEMU:
+3. **If QEMU is not installed yet on Windows**, open PowerShell and run:
+   ```powershell
+   winget install SoftwareFreedomConservancy.QEMU
+   ```
+   *(Or on Linux / WSL: `sudo apt install qemu-system-x86`)*
+4. Run directly with QEMU:
    ```bash
    qemu-system-x86_64 -kernel mykernel.elf -serial stdio
    ```
