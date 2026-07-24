@@ -13,9 +13,24 @@ MyKernel is a minimal educational 64-bit operating system kernel written in C an
 - **Networking Stack**: Ethernet, ARP, IPv4, ICMP (Ping), UDP, TCP, and DHCP client protocol abstractions.
 - **Power & Security**: ACPI Shutdown/Reboot, Crypto checksums, and Security hash verifiers.
 
+## Download Prebuilt Kernel Release
+
+If you do not want to set up build tools or compile from source, you can download the ready-to-run prebuilt kernel binaries directly from GitHub Releases:
+
+1. Go to [**GitHub Releases**](https://github.com/Amit123103/Basic_kernel/releases).
+2. Download **`mykernel.elf`** or **`mykernel.iso`**.
+3. Run directly with QEMU:
+   ```bash
+   qemu-system-x86_64 -kernel mykernel.elf -serial stdio
+   ```
+   Or boot the ISO image:
+   ```bash
+   qemu-system-x86_64 -cdrom mykernel.iso
+   ```
+
 ---
 
-## Download & Quick Start
+## Download & Build from Source
 
 ### 1. Clone/Download the Repository
 

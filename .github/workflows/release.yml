@@ -1,0 +1,72 @@
+name: Build and Release MyKernel
+
+on:
+  push:
+    tags:
+      - 'v*'
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install build tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential nasm qemu-system-x86 gcc-x86-64-linux-gnu xorriso grub-pc-bin grub-common zip
+
+      - name: Build Kernel ELF
+        run: |
+          make CC=x86_64-linux-gnu-gcc LD=x86_64-linux-gnu-ld all
+
+      - name: Build Bootable ISO Image
+        run: |
+          mkdir -p iso/boot/grub
+          cp build/mykernel.elf iso/boot/mykernel.elf
+          cp boot/grub.cfg iso/boot/grub/grub.cfg
+          grub-mkrescue -o build/mykernel.iso iso/
+
+      - name: Prepare Zip Package
+        run: |
+          mkdir -p release_binaries
+          cp build/mykernel.elf release_binaries/mykernel.elf
+          cp build/mykernel.iso release_binaries/mykernel.iso
+          cd release_binaries && zip -r ../mykernel-v1.0.0.zip .
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            build/mykernel.elf
+            build/mykernel.iso
+            mykernel-v1.0.0.zip
+          name: MyKernel v1.0.0 Release
+          body: |
+            ## MyKernel Prebuilt Binary Release (v1.0.0)
+
+            Directly download prebuilt kernel images for **MyKernel** x86_64 Operating System.
+
+            ### Downloadable Assets:
+            - **`mykernel.elf`**: Precompiled 64-bit ELF kernel image executable.
+            - **`mykernel.iso`**: Bootable ISO image compatible with QEMU, VirtualBox, VMware, and physical hardware.
+            - **`mykernel-v1.0.0.zip`**: Complete prebuilt binary bundle.
+
+            ### Quick Run Commands
+
+            #### Run ELF binary in QEMU:
+            ```bash
+            qemu-system-x86_64 -kernel mykernel.elf -serial stdio
+            ```
+
+            #### Boot ISO image in QEMU:
+            ```bash
+            qemu-system-x86_64 -cdrom mykernel.iso
+            ```
