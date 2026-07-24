@@ -19,7 +19,7 @@ if (-not (Test-Path "build")) {
 # Try downloading prebuilt binary if missing locally
 if (-not (Test-Path "build\mykernel.elf") -or ((Get-Item "build\mykernel.elf").Length -lt 100)) {
     Write-Host "[*] Fetching prebuilt kernel binary from GitHub Releases..." -ForegroundColor Yellow
-    curl.exe -sSL "https://github.com/Amit123103/Basic_kernel/releases/download/v1.0.0/mykernel.elf" -o "build/mykernel.elf"
+    curl.exe -sSL "https://github.com/Amit123103/Basic_kernel/releases/latest/download/mykernel.elf" -o "build/mykernel.elf"
 }
 
 # Launch QEMU natively

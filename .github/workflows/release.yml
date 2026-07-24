@@ -36,6 +36,7 @@ jobs:
 
       - name: Prepare Zip Package
         run: |
+          VERSION="${{ github.ref_type == 'tag' && github.ref_name || 'v1.0.6' }}"
           mkdir -p release_binaries
           cp build/mykernel.elf release_binaries/mykernel.elf
           cp build/mykernel.iso release_binaries/mykernel.iso
@@ -44,12 +45,14 @@ jobs:
           cp scripts/run-macos.sh release_binaries/run-macos.sh
           cp scripts/run-linux.sh release_binaries/run-linux.sh
           chmod +x release_binaries/*.sh
-          cd release_binaries && zip -r ../mykernel-v1.0.0.zip .
+          cd release_binaries && zip -r "../mykernel-${VERSION}.zip" .
+          echo "ZIP_PATH=mykernel-${VERSION}.zip" >> $GITHUB_ENV
+          echo "RELEASE_VERSION=${VERSION}" >> $GITHUB_ENV
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ github.ref_type == 'tag' && github.ref_name || 'v1.0.0' }}
+          tag_name: ${{ env.RELEASE_VERSION }}
           files: |
             build/mykernel.elf
             build/mykernel.iso
@@ -57,15 +60,15 @@ jobs:
             scripts/run-windows.ps1
             scripts/run-macos.sh
             scripts/run-linux.sh
-            mykernel-v1.0.0.zip
-          name: MyKernel v1.0.0 Release
+            ${{ env.ZIP_PATH }}
+          name: MyKernel ${{ env.RELEASE_VERSION }} Release
           body: |
-            ## MyKernel Prebuilt Binary Release (v1.0.0)
+            ## MyKernel Prebuilt Binary Release (${{ env.RELEASE_VERSION }})
 
             Directly download prebuilt kernel images and automated launchers for **MyKernel** 64-bit Operating System across **Windows**, **macOS**, and **Linux**.
 
             ### Downloadable Assets:
-            - **`mykernel-v1.0.0.zip`**: Complete multi-platform bundle containing kernel ELF, bootable ISO, and OS launcher scripts.
+            - **`${{ env.ZIP_PATH }}`**: Complete multi-platform bundle containing kernel ELF, bootable ISO, and OS launcher scripts.
             - **`mykernel.elf`**: Precompiled 64-bit ELF kernel image executable.
             - **`mykernel.iso`**: Bootable ISO image compatible with QEMU, VirtualBox, VMware, and physical hardware.
             - **`run-windows.bat` / `run-windows.ps1`**: One-click QEMU launchers for Windows.
@@ -103,4 +106,5 @@ jobs:
                ```bash
                chmod +x run-linux.sh && ./run-linux.sh
                ```
+
 
