@@ -12,15 +12,12 @@
 ## 📋 Table of Contents
 
 - [Features & Subsystem Architecture](#-features--subsystem-architecture)
+- [Installation Guide](#-installation-guide)
+  - [🪟 Windows Installation](#-windows-installation)
+  - [🍎 macOS Installation](#-macos-installation)
+  - [🐧 Linux Installation](#-linux-installation)
 - [Quick Start: Download Prebuilt Releases](#-quick-start-download-prebuilt-releases)
-  - [🪟 Windows Setup & Run](#-windows-setup--run)
-  - [🍎 macOS Setup & Run](#-macos-setup--run)
-  - [🐧 Linux Setup & Run](#-linux-setup--run)
 - [Building from Source](#-building-from-source)
-  - [1. Prerequisites](#1-prerequisites)
-  - [2. Automated Build Scripts](#2-automated-build-scripts)
-  - [3. Manual Compilation & ISO Creation](#3-manual-compilation--iso-creation)
-- [Architecture & Repository Structure](#-architecture--repository-structure)
 - [Kernel Subsystems Overview](#-kernel-subsystems-overview)
 - [QEMU Command Reference](#-qemu-command-reference)
 - [Troubleshooting](#-troubleshooting)
@@ -44,114 +41,101 @@
 
 ---
 
-## ⚡ Quick Start: Download Prebuilt Releases
+## 📥 Installation Guide
 
-If you want to run **MyKernel** immediately without installing compilers or building from source:
+Follow the installation instructions for your operating system below to set up **MyKernel** and its required emulators/compilers.
 
-1. Navigate to [**GitHub Releases**](https://github.com/Amit123103/Basic_kernel/releases/latest).
-2. Download **`mykernel-v1.0.6.zip`** (or individual `mykernel.elf` / `mykernel.iso` binaries).
-3. Extract the archive and follow your operating system's launcher instructions below:
+### 🪟 Windows Installation
 
----
-
-### 🪟 Windows Setup & Run
-
-#### Option A: One-Click Batch Launcher
-1. Open PowerShell as Administrator (once) to install QEMU if you don't have it:
+1. **Install QEMU Emulator**:
+   Open PowerShell as Administrator and run:
    ```powershell
    winget install SoftwareFreedomConservancy.QEMU
    ```
-2. Double-click **`run-windows.bat`** in the extracted release folder.
+   *(Alternatively, download the Windows installer directly from [qemu.org](https://www.qemu.org/download/#windows)).*
 
-#### Option B: PowerShell Script
-```powershell
-Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
-.\scripts\run-windows.ps1
-```
-
----
-
-### 🍎 macOS Setup & Run (Apple Silicon M1/M2/M3/M4 & Intel)
-
-1. Install QEMU using [Homebrew](https://brew.sh):
-   ```bash
-   brew install qemu
+2. **Clone the Repository**:
+   ```powershell
+   git clone https://github.com/Amit123103/Basic_kernel.git
+   cd Basic_kernel
    ```
-2. Run the automated macOS launcher:
-   ```bash
-   chmod +x scripts/run-macos.sh
-   ./scripts/run-macos.sh
+
+3. **Run Automated Setup Script**:
+   ```powershell
+   Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+   .\scripts\setup_and_run.ps1
    ```
 
 ---
 
-### 🐧 Linux Setup & Run (Ubuntu / Debian / Fedora / Arch)
+### 🍎 macOS Installation (Apple Silicon M1/M2/M3/M4 & Intel)
 
-1. Install QEMU for your distribution:
+1. **Install Homebrew** (if not already installed):
    ```bash
-   # Ubuntu / Debian / WSL2
-   sudo apt-get update && sudo apt-get install -y qemu-system-x86
-
-   # Fedora / RHEL
-   sudo dnf install qemu-system-x86
-
-   # Arch Linux
-   sudo pacman -S qemu-desktop
+   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
    ```
-2. Run the Linux launcher:
+
+2. **Install QEMU & Cross-Compiler Tools**:
    ```bash
-   chmod +x scripts/run-linux.sh
-   ./scripts/run-linux.sh
+   brew install qemu nasm make x86_64-elf-gcc x86_64-elf-binutils xorriso
    ```
+
+3. **Clone the Repository & Run Setup**:
+   ```bash
+   git clone https://github.com/Amit123103/Basic_kernel.git
+   cd Basic_kernel
+   chmod +x scripts/setup_and_run_mac.sh
+   ./scripts/setup_and_run_mac.sh
+   ```
+
+---
+
+### 🐧 Linux Installation (Ubuntu / Debian / Fedora / Arch)
+
+1. **Install Build Tools & QEMU**:
+
+   - **Ubuntu / Debian / WSL2**:
+     ```bash
+     sudo apt-get update
+     sudo apt-get install -y build-essential nasm qemu-system-x86 gcc-x86-64-linux-gnu xorriso grub-pc-bin mtools
+     ```
+   - **Fedora / RHEL**:
+     ```bash
+     sudo dnf install -y gcc make nasm qemu-system-x86 xorriso grub2-tools-extra
+     ```
+   - **Arch Linux**:
+     ```bash
+     sudo pacman -S --needed base-devel nasm qemu-desktop xorriso grub
+     ```
+
+2. **Clone the Repository & Run Setup**:
+   ```bash
+   git clone https://github.com/Amit123103/Basic_kernel.git
+   cd Basic_kernel
+   chmod +x scripts/setup_and_run.sh
+   ./scripts/setup_and_run.sh
+   ```
+
+---
+
+## ⚡ Quick Start: Download Prebuilt Releases
+
+If you want to run **MyKernel** immediately without compiling from source:
+
+1. Navigate to [**GitHub Releases**](https://github.com/Amit123103/Basic_kernel/releases/latest).
+2. Download **`mykernel-v1.0.6.zip`** (or individual `mykernel.elf` / `mykernel.iso` binaries).
+3. Extract the zip archive and run the launcher script for your platform:
+   - **Windows**: Double-click `run-windows.bat` or run `.\scripts\run-windows.ps1`
+   - **macOS**: Run `chmod +x scripts/run-macos.sh && ./scripts/run-macos.sh`
+   - **Linux**: Run `chmod +x scripts/run-linux.sh && ./scripts/run-linux.sh`
 
 ---
 
 ## 🛠️ Building from Source
 
-### 1. Prerequisites
+### Manual Compilation & ISO Creation
 
-Ensure you have the required cross-compilation tools and emulators installed on your host system:
-
-| Tool | Purpose | Ubuntu/Debian Command | macOS Command |
-| :--- | :--- | :--- | :--- |
-| `make` | Build Automation | `sudo apt install build-essential` | `brew install make` |
-| `nasm` | x86_64 Assembler | `sudo apt install nasm` | `brew install nasm` |
-| `gcc-x86-64-linux-gnu` | 64-bit C Cross Compiler | `sudo apt install gcc-x86-64-linux-gnu` | `brew install x86_64-elf-gcc` |
-| `qemu-system-x86_64` | System Emulator | `sudo apt install qemu-system-x86` | `brew install qemu` |
-| `xorriso` & `grub-pc-bin` | ISO Image Generation | `sudo apt install xorriso grub-pc-bin mtools` | `brew install xorriso` |
-
----
-
-### 2. Automated Build Scripts
-
-We provide automated setup and execution scripts for every platform:
-
-```bash
-# Clone the repository
-git clone https://github.com/Amit123103/Basic_kernel.git
-cd Basic_kernel
-```
-
-- **Windows (PowerShell)**:
-  ```powershell
-  .\scripts\setup_and_run.ps1
-  ```
-- **macOS**:
-  ```bash
-  chmod +x scripts/setup_and_run_mac.sh
-  ./scripts/setup_and_run_mac.sh
-  ```
-- **Linux / WSL**:
-  ```bash
-  chmod +x scripts/setup_and_run.sh
-  ./scripts/setup_and_run.sh
-  ```
-
----
-
-### 3. Manual Compilation & ISO Creation
-
-You can also use standard `make` targets to build and package MyKernel:
+You can use standard `make` targets to build and package MyKernel:
 
 #### Build Kernel ELF Executable (`build/mykernel.elf`):
 ```bash
@@ -178,80 +162,6 @@ qemu-system-x86_64 -cdrom build/mykernel.iso
 #### Clean Build Artifacts:
 ```bash
 make clean
-```
-
----
-
-## 📂 Architecture & Repository Structure
-
-```text
-My_Kernel/
-├── .github/
-│   └── workflows/
-│       └── release.yml         # GitHub Actions multi-platform CI/CD release workflow
-├── arch/                       # CPU Architecture (x86_64)
-│   ├── gdt.c / gdt.h           # Global Descriptor Table & TSS
-│   ├── idt.c / idt.h           # Interrupt Descriptor Table & Gates
-│   └── isr.asm                 # Assembly Interrupt Service Routines & IRQ Handlers
-├── boot/
-│   ├── boot.asm                # Multiboot2 entry point & Long Mode switcher
-│   └── grub.cfg                # GRUB2 Bootloader Configuration
-├── drivers/                    # Hardware Drivers
-│   ├── vga.c                   # VGA Text (80x25) & Graphics Driver
-│   ├── serial.c                # Serial COM1 UART Driver
-│   ├── keyboard.c              # PS/2 Keyboard Scancode Decoder
-│   ├── pit.c                   # Programmable Interval Timer (1193182 Hz)
-│   ├── rtc.c                   # Real Time Clock (CMOS)
-│   └── speaker.c               # PC Speaker Frequency Generator
-├── memory/                     # Memory Management
-│   ├── pmm.c                   # Physical Memory Manager (Bitmap Page Allocator)
-│   ├── vmm.c                   # Virtual Memory Manager (Paging & Page Tables)
-│   └── heap.c                  # Kernel Heap Allocator (kmalloc / kfree)
-├── fs/                         # Filesystem Layer
-│   ├── vfs.c                   # Virtual File System Node Abstraction
-│   └── fat32.c                 # FAT32 Partition Reader Driver
-├── journalfs/                  # Journaling Filesystem (Log Safety)
-├── network/                    # Full TCPIP Network Stack
-│   ├── ethernet.c              # Layer 2 Ethernet Frame Parser
-│   ├── arp.c                   # Address Resolution Protocol (ARP)
-│   ├── ipv4.c                  # Layer 3 IPv4 Protocol Handling
-│   ├── icmp.c                  # ICMP Protocol (Ping Echo/Reply)
-│   ├── udp.c                   # User Datagram Protocol Sockets
-│   ├── tcp.c                   # Transmission Control Protocol State Machine
-│   └── dhcp.c                  # DHCP Client Dynamic IP Allocation
-├── ipc/                        # Inter-Process Communication
-│   ├── spinlock.c              # Hardware Atomic Spinlocks
-│   ├── mutex.c                 # Sleeping Mutex Locks
-│   ├── msg_queue.c             # IPC Message Queues
-│   ├── pipe.c                  # Ring Buffer IPC Pipes
-│   └── shm.c                   # Shared Memory Subsystem
-├── process/                    # Process Management
-│   ├── process.c               # Task Control Block (PCB) & Scheduler
-│   └── context.asm             # Hardware Context Switching Assembly
-├── syscall/                    # System Calls
-│   └── syscall.c               # System Call Handler & Gate Dispatcher
-├── graphics/                   # Graphical Display Utilities
-├── audio/                      # Audio Drivers & Sound Interface
-├── crypto/                     # Hashing (SHA256/MD5) & Checksums
-├── security/                   # Access Control & Verification
-├── power/                      # ACPI Power Management (Reboot / Shutdown)
-├── time/                       # System Clocks & Delay Functions
-├── shell/                      # Interactive Built-in Kernel CLI Shell
-├── logging/                    # Structured Kernel Logger (kprintf)
-├── debug/                      # Kernel Panic & Stack Trace Debugger
-├── libc/                       # Freestanding C Standard Library
-├── include/                    # Global Kernel Header Files
-├── scripts/                    # Cross-Platform Launcher & Setup Scripts
-│   ├── setup_and_run.sh        # Linux / WSL setup script
-│   ├── setup_and_run_mac.sh    # macOS setup script
-│   ├── setup_and_run.ps1       # Windows PowerShell setup script
-│   ├── run-windows.bat         # Windows double-click launcher
-│   ├── run-windows.ps1         # Windows PowerShell launcher
-│   ├── run-macos.sh            # macOS launcher
-│   └── run-linux.sh            # Linux launcher
-├── linker.ld                   # 64-bit ELF Kernel Linker Script
-├── Makefile                    # Modular Makefile
-└── README.md                   # Project Documentation
 ```
 
 ---
