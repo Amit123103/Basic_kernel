@@ -85,7 +85,3 @@ stack_bottom:
     resb 4096
 stack_top:
 
-
-
-
-
