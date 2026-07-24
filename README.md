@@ -1,4 +1,4 @@
-# 🚀 MyKernel: 64-Bit x86_64 Operating System Kernel
+# MyKernel: 64-Bit x86_64 Operating System Kernel
 
 ![Build and Release](https://github.com/Amit123103/Basic_kernel/actions/workflows/release.yml/badge.svg)
 ![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)
