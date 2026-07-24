@@ -54,6 +54,7 @@ void kernel_main(void) {
     crypto_init();
     journalfs_init();
     time_init();
+    ipc_init();
 
     cpu_halt();
 }

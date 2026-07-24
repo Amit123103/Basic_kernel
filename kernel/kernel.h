@@ -102,5 +102,10 @@ int journalfs_recover(void);
 void time_init(void);
 uint64_t time_now(void);
 void time_set(uint64_t epoch_seconds);
+void ipc_init(void);
+int ipc_msg_send(uint32_t sender_pid, uint32_t receiver_pid, const char *data, uint32_t length);
+int ipc_msg_receive(uint32_t receiver_pid, uint32_t *sender_pid, char *buffer, uint32_t max_length);
+int ipc_pipe_create(int pipefd[2]);
+int ipc_shm_create(uint32_t key, size_t size);
 
 #endif

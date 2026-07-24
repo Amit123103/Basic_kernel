@@ -12,12 +12,34 @@ OBJS := $(BUILD_DIR)/boot/boot.o \
 	$(BUILD_DIR)/boot/multiboot.o \
 	$(BUILD_DIR)/kernel/main.o \
 	$(BUILD_DIR)/kernel/kernel.o \
+	$(BUILD_DIR)/kernel/panic.o \
 	$(BUILD_DIR)/arch/x86_64/gdt.o \
 	$(BUILD_DIR)/arch/x86_64/idt.o \
 	$(BUILD_DIR)/arch/x86_64/cpu.o \
 	$(BUILD_DIR)/arch/x86_64/paging.o \
+	$(BUILD_DIR)/arch/x86_64/tss.o \
+	$(BUILD_DIR)/arch/x86_64/interrupts.o \
 	$(BUILD_DIR)/drivers/vga.o \
-	$(BUILD_DIR)/kernel/panic.o \
+	$(BUILD_DIR)/drivers/keyboard.o \
+	$(BUILD_DIR)/drivers/rtc.o \
+	$(BUILD_DIR)/drivers/serial.o \
+	$(BUILD_DIR)/drivers/speaker.o \
+	$(BUILD_DIR)/drivers/timer.o \
+	$(BUILD_DIR)/memory/allocator.o \
+	$(BUILD_DIR)/memory/heap.o \
+	$(BUILD_DIR)/memory/pmm.o \
+	$(BUILD_DIR)/memory/vmm.o \
+	$(BUILD_DIR)/fs/vfs.o \
+	$(BUILD_DIR)/fs/fat32.o \
+	$(BUILD_DIR)/process/process.o \
+	$(BUILD_DIR)/process/scheduler.o \
+	$(BUILD_DIR)/shell/shell.o \
+	$(BUILD_DIR)/syscall/syscall.o \
+	$(BUILD_DIR)/syscall/syscall_asm.o \
+	$(BUILD_DIR)/user/user.o \
+	$(BUILD_DIR)/graphics/framebuffer.o \
+	$(BUILD_DIR)/graphics/gui.o \
+	$(BUILD_DIR)/libc/stdio.o \
 	$(BUILD_DIR)/libc/string.o \
 	$(BUILD_DIR)/network/network.o \
 	$(BUILD_DIR)/network/pci.o \
@@ -37,7 +59,8 @@ OBJS := $(BUILD_DIR)/boot/boot.o \
 	$(BUILD_DIR)/debug/debug.o \
 	$(BUILD_DIR)/crypto/crypto.o \
 	$(BUILD_DIR)/journalfs/journalfs.o \
-	$(BUILD_DIR)/time/time.o
+	$(BUILD_DIR)/time/time.o \
+	$(BUILD_DIR)/ipc/ipc.o
 
 .PHONY: all clean run
 
@@ -59,7 +82,43 @@ $(BUILD_DIR)/arch/x86_64/%.o: arch/x86_64/%.c
 	@mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) -c $< -o $@
 
+$(BUILD_DIR)/arch/x86_64/%.o: arch/x86_64/%.asm
+	@mkdir -p $(dir $@)
+	$(ASM) $(ASMFLAGS) -o $@ $<
+
 $(BUILD_DIR)/drivers/%.o: drivers/%.c
+	@mkdir -p $(dir $@)
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(BUILD_DIR)/memory/%.o: memory/%.c
+	@mkdir -p $(dir $@)
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(BUILD_DIR)/fs/%.o: fs/%.c
+	@mkdir -p $(dir $@)
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(BUILD_DIR)/process/%.o: process/%.c
+	@mkdir -p $(dir $@)
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(BUILD_DIR)/shell/%.o: shell/%.c
+	@mkdir -p $(dir $@)
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(BUILD_DIR)/syscall/%.o: syscall/%.c
+	@mkdir -p $(dir $@)
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(BUILD_DIR)/syscall/syscall_asm.o: syscall/syscall.asm
+	@mkdir -p $(dir $@)
+	$(ASM) $(ASMFLAGS) -o $@ $<
+
+$(BUILD_DIR)/user/%.o: user/%.c
+	@mkdir -p $(dir $@)
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(BUILD_DIR)/graphics/%.o: graphics/%.c
 	@mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) -c $< -o $@
 
@@ -108,6 +167,10 @@ $(BUILD_DIR)/journalfs/%.o: journalfs/%.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
 $(BUILD_DIR)/time/%.o: time/%.c
+	@mkdir -p $(dir $@)
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(BUILD_DIR)/ipc/%.o: ipc/%.c
 	@mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) -c $< -o $@
 
