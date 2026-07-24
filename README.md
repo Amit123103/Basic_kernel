@@ -35,3 +35,4 @@ Kernel Loaded Successfully
 ## Notes
 
 This repository is intentionally small and conservative so the first boot stage remains understandable.
+
