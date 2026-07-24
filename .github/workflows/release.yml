@@ -14,6 +14,10 @@ jobs:
     permissions:
       contents: write
 
+    env:
+      RELEASE_VERSION: ${{ github.ref_type == 'tag' && github.ref_name || 'v1.0.6' }}
+      ZIP_PATH: ${{ github.ref_type == 'tag' && format('mykernel-{0}.zip', github.ref_name) || 'mykernel-v1.0.6.zip' }}
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -36,7 +40,6 @@ jobs:
 
       - name: Prepare Zip Package
         run: |
-          VERSION="${{ github.ref_type == 'tag' && github.ref_name || 'v1.0.6' }}"
           mkdir -p release_binaries
           cp build/mykernel.elf release_binaries/mykernel.elf
           cp build/mykernel.iso release_binaries/mykernel.iso
@@ -45,9 +48,7 @@ jobs:
           cp scripts/run-macos.sh release_binaries/run-macos.sh
           cp scripts/run-linux.sh release_binaries/run-linux.sh
           chmod +x release_binaries/*.sh
-          cd release_binaries && zip -r "../mykernel-${VERSION}.zip" .
-          echo "ZIP_PATH=mykernel-${VERSION}.zip" >> $GITHUB_ENV
-          echo "RELEASE_VERSION=${VERSION}" >> $GITHUB_ENV
+          cd release_binaries && zip -r "../${ZIP_PATH}" .
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
