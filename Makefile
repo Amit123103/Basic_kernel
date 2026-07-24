@@ -3,7 +3,7 @@ LD ?= x86_64-elf-ld
 ASM ?= nasm
 QEMU ?= qemu-system-x86_64
 
-CFLAGS := -ffreestanding -fno-stack-protector -fno-pic -mno-red-zone -Wall -Wextra -O2 -std=c11 -Iinclude -I.
+CFLAGS := -ffreestanding -fno-stack-protector -fno-pic -mno-red-zone -Wall -Wextra -O2 -std=c11 -Iinclude -I. -Ikernel
 LDFLAGS := -nostdlib -static -T linker.ld -z max-page-size=0x1000
 ASMFLAGS := -f elf64
 
