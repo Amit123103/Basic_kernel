@@ -2,6 +2,7 @@
 #define KERNEL_H
 
 #include <stdint.h>
+#include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include "syscall/syscall.h"
