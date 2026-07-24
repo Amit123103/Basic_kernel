@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include "syscall/syscall.h"
 #include "ipc/ipc.h"
+#include "fs/vfs.h"
 
 #define VGA_MEMORY ((volatile uint16_t *)0xB8000)
 #define VGA_WIDTH 80
@@ -51,7 +52,7 @@ void vfs_init(void);
 int vfs_open(const char *path);
 int vfs_read(int fd, void *buffer, size_t size);
 int vfs_write(int fd, const void *buffer, size_t size);
-int vfs_list_dir(void *out_dir);
+int vfs_list_dir(vfs_dir_t *out_dir);
 void fat32_init(void);
 int fat32_read_boot_sector(void);
 void user_mode_init(void);

@@ -1,6 +1,6 @@
 #include "kernel.h"
 
-static uint16_t *const vga_buffer = VGA_MEMORY;
+static volatile uint16_t *const vga_buffer = VGA_MEMORY;
 static uint8_t g_cursor_row = 0;
 static uint8_t g_cursor_col = 0;
 static uint8_t g_foreground_color = 0x0F;
