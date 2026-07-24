@@ -42,8 +42,9 @@ jobs:
           cd release_binaries && zip -r ../mykernel-v1.0.0.zip .
 
       - name: Create GitHub Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
+          tag_name: ${{ github.ref_type == 'tag' && github.ref_name || 'v1.0.0' }}
           files: |
             build/mykernel.elf
             build/mykernel.iso
