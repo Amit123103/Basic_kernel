@@ -92,5 +92,15 @@ uint32_t firmware_detect_revision(void);
 void debug_init(void);
 void debug_trace(const char *message);
 void debug_dump_registers(void);
+void crypto_init(void);
+uint32_t crypto_xor_hash(const char *text);
+uint32_t crypto_crc32(const char *text);
+void journalfs_init(void);
+int journalfs_mount(void);
+int journalfs_append_log(const char *entry);
+int journalfs_recover(void);
+void time_init(void);
+uint64_t time_now(void);
+void time_set(uint64_t epoch_seconds);
 
 #endif

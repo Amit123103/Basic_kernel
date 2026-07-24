@@ -34,7 +34,10 @@ OBJS := $(BUILD_DIR)/boot/boot.o \
 	$(BUILD_DIR)/logging/logging.o \
 	$(BUILD_DIR)/compression/compression.o \
 	$(BUILD_DIR)/firmware/firmware.o \
-	$(BUILD_DIR)/debug/debug.o
+	$(BUILD_DIR)/debug/debug.o \
+	$(BUILD_DIR)/crypto/crypto.o \
+	$(BUILD_DIR)/journalfs/journalfs.o \
+	$(BUILD_DIR)/time/time.o
 
 .PHONY: all clean run
 
@@ -93,6 +96,18 @@ $(BUILD_DIR)/firmware/%.o: firmware/%.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
 $(BUILD_DIR)/debug/%.o: debug/%.c
+	@mkdir -p $(dir $@)
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(BUILD_DIR)/crypto/%.o: crypto/%.c
+	@mkdir -p $(dir $@)
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(BUILD_DIR)/journalfs/%.o: journalfs/%.c
+	@mkdir -p $(dir $@)
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(BUILD_DIR)/time/%.o: time/%.c
 	@mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) -c $< -o $@
 

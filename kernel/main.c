@@ -51,6 +51,9 @@ void kernel_main(void) {
     compression_init();
     firmware_init();
     debug_init();
+    crypto_init();
+    journalfs_init();
+    time_init();
 
     cpu_halt();
 }
