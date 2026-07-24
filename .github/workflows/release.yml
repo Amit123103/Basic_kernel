@@ -39,6 +39,11 @@ jobs:
           mkdir -p release_binaries
           cp build/mykernel.elf release_binaries/mykernel.elf
           cp build/mykernel.iso release_binaries/mykernel.iso
+          cp scripts/run-windows.bat release_binaries/run-windows.bat
+          cp scripts/run-windows.ps1 release_binaries/run-windows.ps1
+          cp scripts/run-macos.sh release_binaries/run-macos.sh
+          cp scripts/run-linux.sh release_binaries/run-linux.sh
+          chmod +x release_binaries/*.sh
           cd release_binaries && zip -r ../mykernel-v1.0.0.zip .
 
       - name: Create GitHub Release
@@ -48,26 +53,54 @@ jobs:
           files: |
             build/mykernel.elf
             build/mykernel.iso
+            scripts/run-windows.bat
+            scripts/run-windows.ps1
+            scripts/run-macos.sh
+            scripts/run-linux.sh
             mykernel-v1.0.0.zip
           name: MyKernel v1.0.0 Release
           body: |
             ## MyKernel Prebuilt Binary Release (v1.0.0)
 
-            Directly download prebuilt kernel images for **MyKernel** x86_64 Operating System.
+            Directly download prebuilt kernel images and automated launchers for **MyKernel** 64-bit Operating System across **Windows**, **macOS**, and **Linux**.
 
             ### Downloadable Assets:
+            - **`mykernel-v1.0.0.zip`**: Complete multi-platform bundle containing kernel ELF, bootable ISO, and OS launcher scripts.
             - **`mykernel.elf`**: Precompiled 64-bit ELF kernel image executable.
             - **`mykernel.iso`**: Bootable ISO image compatible with QEMU, VirtualBox, VMware, and physical hardware.
-            - **`mykernel-v1.0.0.zip`**: Complete prebuilt binary bundle.
+            - **`run-windows.bat` / `run-windows.ps1`**: One-click QEMU launchers for Windows.
+            - **`run-macos.sh`**: One-command QEMU launcher for macOS (Apple Silicon & Intel).
+            - **`run-linux.sh`**: One-command QEMU launcher for Linux (Ubuntu/Debian, Fedora, Arch).
 
-            ### Quick Run Commands
+            ### How to Run by Platform
 
-            #### Run ELF binary in QEMU:
-            ```bash
-            qemu-system-x86_64 -kernel mykernel.elf -serial stdio
-            ```
+            #### 🪟 Windows
+            1. Install QEMU via PowerShell (if not already installed):
+               ```powershell
+               winget install SoftwareFreedomConservancy.QEMU
+               ```
+            2. Double-click `run-windows.bat` or run in PowerShell:
+               ```powershell
+               .\run-windows.ps1
+               ```
 
-            #### Boot ISO image in QEMU:
-            ```bash
-            qemu-system-x86_64 -cdrom mykernel.iso
-            ```
+            #### 🍎 macOS
+            1. Install QEMU via Homebrew:
+               ```bash
+               brew install qemu
+               ```
+            2. Run launcher script:
+               ```bash
+               chmod +x run-macos.sh && ./run-macos.sh
+               ```
+
+            #### 🐧 Linux
+            1. Install QEMU:
+               ```bash
+               sudo apt install qemu-system-x86   # Ubuntu/Debian
+               ```
+            2. Run launcher script:
+               ```bash
+               chmod +x run-linux.sh && ./run-linux.sh
+               ```
+

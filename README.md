@@ -15,23 +15,15 @@ MyKernel is a minimal educational 64-bit operating system kernel written in C an
 
 ## Download Prebuilt Kernel Release
 
-If you do not want to set up build tools or compile from source, you can download the ready-to-run prebuilt kernel binaries directly from GitHub Releases:
+If you do not want to set up build tools or compile from source, you can download the ready-to-run prebuilt release bundle directly from GitHub Releases:
 
 1. Go to [**GitHub Releases**](https://github.com/Amit123103/Basic_kernel/releases).
-2. Download **`mykernel.elf`** or **`mykernel.iso`**.
-3. **If QEMU is not installed yet on Windows**, open PowerShell and run:
-   ```powershell
-   winget install SoftwareFreedomConservancy.QEMU
-   ```
-   *(Or on Linux / WSL: `sudo apt install qemu-system-x86`)*
-4. Run directly with QEMU:
-   ```bash
-   qemu-system-x86_64 -kernel mykernel.elf -serial stdio
-   ```
-   Or boot the ISO image:
-   ```bash
-   qemu-system-x86_64 -cdrom mykernel.iso
-   ```
+2. Download **`mykernel-v1.0.0.zip`** (or individual `mykernel.elf` / `mykernel.iso` assets).
+3. **Run on your Operating System:**
+
+   - **🪟 Windows**: Double-click `run-windows.bat` or run PowerShell script `.\scripts\run-windows.ps1` (Installs QEMU via `winget install SoftwareFreedomConservancy.QEMU` if needed).
+   - **🍎 macOS**: Run `chmod +x scripts/run-macos.sh && ./scripts/run-macos.sh` (Installs QEMU via `brew install qemu` if needed).
+   - **🐧 Linux**: Run `chmod +x scripts/run-linux.sh && ./scripts/run-linux.sh` (Installs QEMU via `sudo apt install qemu-system-x86` if needed).
 
 ---
 
@@ -46,15 +38,21 @@ cd Basic_kernel
 
 ### 2. Automated One-Command Setup & Run
 
-#### On Linux / WSL (Debian/Ubuntu):
+#### On Windows (PowerShell):
+```powershell
+.\scripts\setup_and_run.ps1
+```
+
+#### On macOS (Apple Silicon & Intel):
+```bash
+chmod +x scripts/setup_and_run_mac.sh
+./scripts/setup_and_run_mac.sh
+```
+
+#### On Linux / WSL (Debian/Ubuntu/Fedora/Arch):
 ```bash
 chmod +x scripts/setup_and_run.sh
 ./scripts/setup_and_run.sh
-```
-
-#### On Windows PowerShell:
-```powershell
-.\scripts\setup_and_run.ps1
 ```
 
 ---
