@@ -84,3 +84,8 @@ page_table_l2:
 stack_bottom:
     resb 4096
 stack_top:
+
+
+
+
+
